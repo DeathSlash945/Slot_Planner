@@ -1,0 +1,44 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Slot Planner</title>
+<style>
+:root{--bg:#20212B;--panel:#2D4354;--panel2:#534145;--ink:#FED7A5;--mut:#73766A;--acc:#9E6752;--red:#e5484d;--yel:#f2c94c;--org:#f08a24;color-scheme:dark}
+@media(prefers-color-scheme:light){:root{--bg:#FED7A5;--panel:#f3e3cc;--panel2:#d9bfa3;--ink:#20212B;--mut:#534145;--acc:#9E6752;color-scheme:light}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.4 "Segoe UI",system-ui,sans-serif}
+header{display:flex;gap:12px;align-items:center;padding:10px 16px;background:var(--panel);flex-wrap:wrap}
+h1{font-size:18px;margin:0;letter-spacing:.5px}input,select,button{font:inherit;color:inherit;background:var(--bg);border:1px solid var(--mut);border-radius:8px;padding:6px 10px}
+button{cursor:pointer}button:hover{border-color:var(--acc)}#q{flex:1;min-width:180px}
+main{display:grid;grid-template-columns:210px 1fr 320px;gap:12px;padding:12px}
+@media(max-width:1100px){main{grid-template-columns:1fr}}
+.box{background:var(--panel);border-radius:12px;padding:10px}.box h3{margin:0 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--acc)}
+.chip{display:inline-block;margin:2px;padding:3px 10px;border-radius:99px;border:1px solid var(--mut);cursor:pointer;user-select:none}
+.chip.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.tw{overflow:auto}table{border-collapse:collapse;width:100%;min-width:1100px;table-layout:fixed}
+th,td{border:1px solid var(--panel2);vertical-align:top;padding:3px;font-size:11px}th{background:var(--panel);position:sticky;top:0}
+td.day{font-weight:700;background:var(--panel);width:48px}td .sl{color:var(--mut);font-weight:700;display:block}
+td.lab{background:rgba(158,103,82,.12)}
+.c{display:block;margin:2px 0;padding:2px 5px;border-radius:5px;cursor:pointer;color:#fff;border-left:4px solid transparent;white-space:normal;word-break:break-word}
+.c.sel{outline:2px solid var(--ink)}
+.c.red,.f.red{border-left-color:var(--red);box-shadow:inset 0 0 0 1px var(--red)}
+.c.org,.f.org{border-left-color:var(--org);box-shadow:inset 0 0 0 1px var(--org)}
+.c.yel,.f.yel{border-left-color:var(--yel);box-shadow:inset 0 0 0 1px var(--yel)}
+.f{padding:4px 6px;margin:3px 0;border-radius:6px;font-size:12px;border-left:4px solid}
+.f.red{border-color:var(--red)}.f.org{border-color:var(--org)}.f.yel{border-color:var(--yel)}
+#side{display:flex;flex-direction:column;gap:12px;max-height:calc(100vh - 80px);overflow:auto}
+.lg{margin:8px 0 2px;font-weight:700;color:var(--acc)}.li{display:inline-block;margin:2px;padding:2px 8px;border-radius:5px;cursor:pointer;color:#fff;font-size:12px}.dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px}
+dialog{background:var(--panel);color:var(--ink);border:1px solid var(--acc);border-radius:12px;max-width:520px}
+label{display:block;margin:10px 0 4px}small{color:var(--mut)}.row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+</style></head><body>
+<header><h1>Slot Planner</h1><input id="q" placeholder="Search course code or name"><button id="set">Settings</button></header>
+<main>
+<aside class="box"><h3>Category</h3><div id="fc"></div><h3 style="margin-top:12px">Year</h3><div id="fy"></div><h3 style="margin-top:12px">Branch</h3><select id="fb" style="width:100%"></select>
+<p><small id="cnt"></small></p><h3>Legend</h3>
+<div class="f red">Core vs core</div><div class="f yel">Elective vs elective</div><div class="f org">Core vs elective, same year</div></aside>
+<div><div id="top" class="tw" style="height:16px"><div id="sp" style="height:1px"></div></div><section class="tw" id="mn"><table id="tt"></table></section><div class="box" id="lst" style="margin-top:12px"></div></div>
+<div id="side"><div class="box"><h3>Conflicts</h3><div id="cf"></div></div><div class="box"><h3>Course</h3><div id="dt"><small>Click a course</small></div></div></div>
+</main>
+<dialog id="dlg"><h3>Settings</h3>
+<label>Course list (PDF or text)</label><input type="file" id="fcl" accept=".pdf,.txt">
+<label>Common timetable (PDF or text)</label><input type="file" id="ftt" accept=".pdf,.txt">
+<p><small>Files are parsed in your browser. PDF reading loads pdf.js from cdnjs (needs internet once). A text export (pdftotext -layout) works offline.</small></p>
+<div class="row"><button id="rs">Reset to bundled data</button><button id="cl">Close</button></div><p id="msg"></p></dialog>
+<script src="data.js"></script><script src="parser.js"></script><script src="app.js"></script></body></html>
