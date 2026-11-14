@@ -1,7 +1,7 @@
 const $=s=>document.querySelector(s);
 const TIMES=['8:30-9:25','9:30-10:25','10:30-11:25','11:30-12:25','12:30-1:25','2:30-3:25','3:30-4:25','4:30-5:25'];
 const LABCOLS=[[1,2,3],[5,6,7]],W={red:10,org:5,yel:2};
-let D,OCC,F={cats:new Set(),years:new Set(),branch:'',q:''},SEL=null;
+let D,OCC,F={progs:new Set(),cats:new Set(),years:new Set(),branch:'',q:''},SEL=null;
 try{D=JSON.parse(localStorage.getItem('sp_data'))}catch(e){}
 D=D&&D.courses?D:window.DEFAULT_DATA;
 D.courses.forEach((c,i)=>c.id=i);
@@ -26,6 +26,7 @@ function visible(){const q=F.q.toLowerCase();return D.courses.filter(c=>{
   if(!c.slots.length)return false;
   if(F.cats.size&&!(F.cats.has(c.cat)||(F.cats.has('PL')&&c.pl)))return false;
   if(F.years.size&&!(F.years.has(c.year)||(c.year==null&&!core(c))))return false;
+  if(F.progs.size&&!(F.progs.has(c.prog)||(!c.prog&&!core(c))))return false;
   if(F.branch&&!(c.branches.includes('*')||c.branches.includes(F.branch)))return false;
   return !q||(c.code+' '+c.name).toLowerCase().includes(q)})}
 function color(c){let h=0;for(const ch of c.code+c.name)h=(h*31+ch.charCodeAt(0))>>>0;
@@ -68,11 +69,13 @@ function detail(c){
   <h3 style="margin-top:10px">Best shifts</h3>`+(res.length?res.map(r=>`<div><b>${r.L} to ${r.C}</b> ${r.pm?'(afternoon)':''} score ${r.score}${r.cf.length?f(r.cf):' no clashes'}</div>`).join(''):'<small>No alternative</small>')}
 function init(){build();
   $('#fc').innerHTML=['PC','PE','OE','PL'].map(x=>`<span class="chip" data-c="${x}">${x}</span>`).join('');
+  $('#fp').innerHTML=['BTech','MTech','MSc','PhD','Prep'].map(x=>`<span class="chip" data-p="${x}">${x}</span>`).join('');
   $('#fy').innerHTML=[0,1,2,3,4].map(x=>`<span class="chip" data-y="${x}">${x?'Year '+x:'Prep'}</span>`).join('');
   const br=[...new Set(D.courses.flatMap(c=>c.branches).filter(x=>x!=='*'))].sort();
   $('#fb').innerHTML='<option value="">All branches</option>'+br.map(b=>`<option>${b}</option>`).join('');render()}
 document.addEventListener('click',e=>{const t=e.target;
   if(t.dataset.c){F.cats.has(t.dataset.c)?F.cats.delete(t.dataset.c):F.cats.add(t.dataset.c);t.classList.toggle('on');render()}
+  else if(t.dataset.p){F.progs.has(t.dataset.p)?F.progs.delete(t.dataset.p):F.progs.add(t.dataset.p);t.classList.toggle('on');render()}
   else if(t.dataset.y){const y=+t.dataset.y;F.years.has(y)?F.years.delete(y):F.years.add(y);t.classList.toggle('on');render()}
   else if(t.dataset.id){SEL=+t.dataset.id;render()}});
 $('#q').oninput=e=>{F.q=e.target.value;render()};$('#fb').onchange=e=>{F.branch=e.target.value;render()};
